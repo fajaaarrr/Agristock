@@ -3,84 +3,269 @@
 @section('title', 'Dashboard - AgriStock')
 @section('header_title', 'Dashboard')
 
+@section('styles')
+<style>
+    /* Custom premium styling for dashboard cards */
+    .stat-card {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.05) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.01) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+    }
+
+    /* Specific glows/borders on hover */
+    .stat-card-success:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(46, 125, 50, 0.08) !important;
+        border-color: rgba(46, 125, 50, 0.2) !important;
+    }
+    .stat-card-primary:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(13, 110, 253, 0.08) !important;
+        border-color: rgba(13, 110, 253, 0.2) !important;
+    }
+    .stat-card-info:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(8, 145, 178, 0.08) !important;
+        border-color: rgba(8, 145, 178, 0.2) !important;
+    }
+    .stat-card-warning:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(217, 119, 6, 0.08) !important;
+        border-color: rgba(217, 119, 6, 0.2) !important;
+    }
+
+    /* Icon wrappers */
+    .stat-icon-wrapper {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover .stat-icon-wrapper {
+        transform: scale(1.08) rotate(3deg);
+    }
+
+    .stat-success {
+        background: linear-gradient(135deg, rgba(46, 125, 50, 0.12) 0%, rgba(46, 125, 50, 0.25) 100%);
+        color: #2e7d32;
+    }
+
+    .stat-primary {
+        background: linear-gradient(135deg, rgba(13, 110, 253, 0.12) 0%, rgba(13, 110, 253, 0.25) 100%);
+        color: #0d6efd;
+    }
+
+    .stat-info {
+        background: linear-gradient(135deg, rgba(8, 145, 178, 0.12) 0%, rgba(8, 145, 178, 0.25) 100%);
+        color: #0891b2;
+    }
+
+    .stat-warning {
+        background: linear-gradient(135deg, rgba(217, 119, 6, 0.12) 0%, rgba(217, 119, 6, 0.25) 100%);
+        color: #d97706;
+    }
+
+    /* Label & values */
+    .stat-label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #6c7a70;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 6px;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1a251c;
+        margin: 0;
+        line-height: 1.1;
+    }
+
+    .stat-footer {
+        border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
+    }
+
+    .stat-footer-text {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #8a9a8f !important;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Background decorative glow */
+    .stat-bg-glow {
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        filter: blur(40px);
+        opacity: 0.08;
+        top: -50px;
+        right: -50px;
+        pointer-events: none;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover .stat-bg-glow {
+        transform: scale(1.2);
+        opacity: 0.15;
+    }
+
+    .glow-success { background-color: #2e7d32; }
+    .glow-primary { background-color: #0d6efd; }
+    .glow-info { background-color: #0891b2; }
+    .glow-warning { background-color: #d97706; }
+
+    @media (max-width: 576px) {
+        /* Stat cards: 2 columns on mobile */
+        .stat-card-col {
+            width: 50% !important;
+            flex: 0 0 50% !important;
+            max-width: 50% !important;
+            padding-left: 6px !important;
+            padding-right: 6px !important;
+        }
+        .stat-card .card-body {
+            padding: 12px 14px !important;
+        }
+        .stat-icon-wrapper {
+            width: 38px;
+            height: 38px;
+            font-size: 1rem;
+            border-radius: 8px;
+        }
+        .stat-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 1.4rem;
+        }
+        .stat-footer-text {
+            font-size: 0.68rem;
+        }
+        /* Chart smaller on mobile */
+        #inventoryChart-wrapper {
+            height: 220px !important;
+        }
+        /* Activity log wrapping */
+        .activity-text {
+            font-size: 0.82rem !important;
+        }
+        /* Dashboard row gap */
+        .dashboard-stats-row {
+            margin-left: -6px !important;
+            margin-right: -6px !important;
+        }
+    }
+</style>
+@endsection
+
 @section('content')
 <!-- Row 1: Statistics Cards -->
-<div class="row">
+<div class="row dashboard-stats-row">
     <!-- Total Barang -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card card-custom border-start border-success border-4 h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1" style="font-size: 0.75rem; letter-spacing: 0.5px;">
-                            Total Barang</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800" style="font-size: 1.8rem; font-weight: 700;">{{ $total_items }}</div>
+    <div class="col-xl-3 col-md-6 col-6 mb-4 stat-card-col">
+        <div class="card stat-card stat-card-success border-0">
+            <div class="card-body p-3 p-md-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="stat-icon-wrapper stat-success">
+                        <i class="fa-solid fa-boxes-stacked"></i>
                     </div>
-                    <div class="col-auto">
-                        <div class="bg-success-subtle p-3 rounded-circle text-success" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
-                            <i class="fa-solid fa-boxes-stacked fs-4"></i>
-                        </div>
-                    </div>
+                    <div class="stat-bg-glow glow-success"></div>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">Total Barang</span>
+                    <h3 class="stat-value">{{ $total_items }}</h3>
+                </div>
+                <div class="stat-footer mt-3 pt-2">
+                    <span class="stat-footer-text">
+                        <i class="fa-solid fa-circle-check text-success me-1"></i> Terdaftar di sistem
+                    </span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Total Kategori -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card card-custom border-start border-primary border-4 h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="font-size: 0.75rem; letter-spacing: 0.5px;">
-                            Total Kategori</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800" style="font-size: 1.8rem; font-weight: 700;">{{ $total_categories }}</div>
+    <div class="col-xl-3 col-md-6 col-6 mb-4 stat-card-col">
+        <div class="card stat-card stat-card-primary border-0">
+            <div class="card-body p-3 p-md-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="stat-icon-wrapper stat-primary">
+                        <i class="fa-solid fa-tags"></i>
                     </div>
-                    <div class="col-auto">
-                        <div class="bg-primary-subtle p-3 rounded-circle text-primary" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
-                            <i class="fa-solid fa-tags fs-4"></i>
-                        </div>
-                    </div>
+                    <div class="stat-bg-glow glow-primary"></div>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">Total Kategori</span>
+                    <h3 class="stat-value">{{ $total_categories }}</h3>
+                </div>
+                <div class="stat-footer mt-3 pt-2">
+                    <span class="stat-footer-text">
+                        <i class="fa-solid fa-folder-open text-primary me-1"></i> Klasifikasi barang
+                    </span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Barang Masuk Bulan Ini -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card card-custom border-start border-info border-4 h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1" style="font-size: 0.75rem; letter-spacing: 0.5px;">
-                            Masuk Bulan Ini</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800" style="font-size: 1.8rem; font-weight: 700;">{{ $total_incoming_this_month }}</div>
+    <div class="col-xl-3 col-md-6 col-6 mb-4 stat-card-col">
+        <div class="card stat-card stat-card-info border-0">
+            <div class="card-body p-3 p-md-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="stat-icon-wrapper stat-info">
+                        <i class="fa-solid fa-cloud-arrow-down"></i>
                     </div>
-                    <div class="col-auto">
-                        <div class="bg-info-subtle p-3 rounded-circle text-info" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
-                            <i class="fa-solid fa-cloud-arrow-down fs-4"></i>
-                        </div>
-                    </div>
+                    <div class="stat-bg-glow glow-info"></div>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">Masuk Bulan Ini</span>
+                    <h3 class="stat-value">{{ $total_incoming_this_month }}</h3>
+                </div>
+                <div class="stat-footer mt-3 pt-2">
+                    <span class="stat-footer-text">
+                        <i class="fa-solid fa-circle-arrow-down text-info me-1"></i> Transaksi masuk
+                    </span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Barang Keluar Bulan Ini -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card card-custom border-start border-warning border-4 h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1" style="font-size: 0.75rem; letter-spacing: 0.5px;">
-                            Keluar Bulan Ini</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800" style="font-size: 1.8rem; font-weight: 700;">{{ $total_outgoing_this_month }}</div>
+    <div class="col-xl-3 col-md-6 col-6 mb-4 stat-card-col">
+        <div class="card stat-card stat-card-warning border-0">
+            <div class="card-body p-3 p-md-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="stat-icon-wrapper stat-warning">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
                     </div>
-                    <div class="col-auto">
-                        <div class="bg-warning-subtle p-3 rounded-circle text-warning" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
-                            <i class="fa-solid fa-cloud-arrow-up fs-4"></i>
-                        </div>
-                    </div>
+                    <div class="stat-bg-glow glow-warning"></div>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">Keluar Bulan Ini</span>
+                    <h3 class="stat-value">{{ $total_outgoing_this_month }}</h3>
+                </div>
+                <div class="stat-footer mt-3 pt-2">
+                    <span class="stat-footer-text">
+                        <i class="fa-solid fa-circle-arrow-up text-warning me-1"></i> Transaksi keluar
+                    </span>
                 </div>
             </div>
         </div>
@@ -90,21 +275,21 @@
 <!-- Row 2: Charts and Low Stock Widget -->
 <div class="row">
     <!-- Chart Column -->
-    <div class="col-xl-8 col-lg-7">
+    <div class="col-xl-8 col-lg-7 col-12">
         <div class="card card-custom p-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="m-0 font-weight-bold text-green"><i class="fa-solid fa-chart-column me-2"></i> Grafik Aliran Barang (Tahun {{ date('Y') }})</h5>
+                <h5 class="m-0 font-weight-bold text-green" style="font-size: 0.95rem;"><i class="fa-solid fa-chart-column me-2"></i> Grafik Aliran Barang (Tahun {{ date('Y') }})</h5>
             </div>
-            <div style="position: relative; height: 320px;">
+            <div id="inventoryChart-wrapper" style="position: relative; height: 320px;">
                 <canvas id="inventoryChart"></canvas>
             </div>
         </div>
     </div>
 
     <!-- Low Stock Alert Widget -->
-    <div class="col-xl-4 col-lg-5">
+    <div class="col-xl-4 col-lg-5 col-12">
         <div class="card card-custom h-100 p-4">
-            <h5 class="mb-3 font-weight-bold text-danger d-flex align-items-center">
+            <h5 class="mb-3 font-weight-bold text-danger d-flex align-items-center" style="font-size: 0.95rem;">
                 <i class="fa-solid fa-triangle-exclamation me-2 animate-bounce"></i>
                 Stok Menipis ({{ $low_stock_items->count() }})
             </h5>
@@ -114,10 +299,10 @@
                         @foreach($low_stock_items as $lowItem)
                             <div class="list-group-item px-0 py-3 border-bottom d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h6 class="m-0 font-weight-bold text-dark">{{ $lowItem->nama_barang }}</h6>
+                                    <h6 class="m-0 font-weight-bold text-dark" style="font-size: 0.9rem;">{{ $lowItem->nama_barang }}</h6>
                                     <small class="text-muted">Kode: {{ $lowItem->kode_barang }} | Rak: {{ $lowItem->lokasi_rak ?? '-' }}</small>
                                 </div>
-                                <div class="text-end">
+                                <div class="text-end ms-2">
                                     <span class="badge badge-low-stock p-2 rounded-pill mb-1">
                                         {{ $lowItem->stok }} {{ $lowItem->satuan }}
                                     </span>
@@ -140,10 +325,10 @@
 <!-- Row 3: Recently Added and Recent Activities -->
 <div class="row mt-4">
     <!-- Recently Added Items -->
-    <div class="col-lg-6 mb-4">
+    <div class="col-lg-6 col-12 mb-4">
         <div class="card card-custom h-100 p-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="m-0 font-weight-bold text-green"><i class="fa-solid fa-plus-circle me-2"></i> Barang Terbaru Ditambahkan</h5>
+                <h5 class="m-0 font-weight-bold text-green" style="font-size: 0.9rem;"><i class="fa-solid fa-plus-circle me-2"></i> Barang Terbaru Ditambahkan</h5>
                 <a href="{{ route('items.index') }}" class="btn btn-sm btn-outline-success border-0">Lihat Semua</a>
             </div>
             <div class="table-responsive">
@@ -152,7 +337,7 @@
                         <tr>
                             <th>Kode</th>
                             <th>Nama Barang</th>
-                            <th>Kategori</th>
+                            <th class="d-none d-md-table-cell">Kategori</th>
                             <th>Stok</th>
                         </tr>
                     </thead>
@@ -160,13 +345,13 @@
                         @if($recent_items->count() > 0)
                             @foreach($recent_items as $recentItem)
                                 <tr>
-                                    <td><code class="text-dark">{{ $recentItem->kode_barang }}</code></td>
+                                    <td><code class="text-dark" style="font-size: 0.8rem;">{{ $recentItem->kode_barang }}</code></td>
                                     <td>
-                                        <a href="{{ route('items.show', $recentItem->id) }}" class="text-decoration-none text-dark font-weight-bold">
+                                        <a href="{{ route('items.show', $recentItem->id) }}" class="text-decoration-none text-dark font-weight-bold" style="font-size: 0.9rem;">
                                             {{ $recentItem->nama_barang }}
                                         </a>
                                     </td>
-                                    <td><span class="badge bg-secondary-subtle text-dark">{{ $recentItem->category->nama_kategori }}</span></td>
+                                    <td class="d-none d-md-table-cell"><span class="badge bg-secondary-subtle text-dark">{{ $recentItem->category->nama_kategori }}</span></td>
                                     <td>
                                         <span class="badge {{ $recentItem->is_low_stock ? 'bg-danger' : 'bg-success' }}">
                                             {{ $recentItem->stok }} {{ $recentItem->satuan }}
@@ -186,34 +371,32 @@
     </div>
 
     <!-- Recent Activity Log (Incoming + Outgoing combined) -->
-    <div class="col-lg-6 mb-4">
+    <div class="col-lg-6 col-12 mb-4">
         <div class="card card-custom h-100 p-4">
-            <h5 class="mb-3 font-weight-bold text-green"><i class="fa-solid fa-clock-rotate-left me-2"></i> Aktivitas Terakhir</h5>
+            <h5 class="mb-3 font-weight-bold text-green" style="font-size: 0.9rem;"><i class="fa-solid fa-clock-rotate-left me-2"></i> Aktivitas Terakhir</h5>
             <div class="timeline" style="max-height: 320px; overflow-y: auto;">
                 @if(count($recent_activities) > 0)
                     <div class="list-group list-group-flush">
                         @foreach($recent_activities as $act)
                             <div class="list-group-item px-0 py-3 border-bottom d-flex align-items-start">
-                                <div class="activity-icon me-3 bg-{{ $act['type'] == 'incoming' ? 'success' : 'danger' }}-subtle text-{{ $act['type'] == 'incoming' ? 'success' : 'danger' }} p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
-                                    <i class="fa-solid fa-{{ $act['type'] == 'incoming' ? 'arrow-down-long' : 'arrow-up-long' }}"></i>
+                                <div class="activity-icon me-3 bg-{{ $act['type'] == 'incoming' ? 'success' : 'danger' }}-subtle text-{{ $act['type'] == 'incoming' ? 'success' : 'danger' }} p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; flex-shrink: 0;">
+                                    <i class="fa-solid fa-{{ $act['type'] == 'incoming' ? 'arrow-down-long' : 'arrow-up-long' }}" style="font-size: 0.85rem;"></i>
                                 </div>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <strong class="text-dark">{{ $act['type'] == 'incoming' ? 'Barang Masuk' : 'Barang Keluar' }}</strong>
+                                <div class="flex-grow-1" style="min-width: 0;">
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-1">
+                                        <strong class="text-dark" style="font-size: 0.88rem;">{{ $act['type'] == 'incoming' ? 'Barang Masuk' : 'Barang Keluar' }}</strong>
                                         <small class="text-muted">{{ \Carbon\Carbon::parse($act['tanggal'])->translatedFormat('d M Y') }}</small>
                                     </div>
-                                    <p class="mb-1 text-muted" style="font-size: 0.9rem;">
-                                        Barang <strong class="text-dark">{{ $act['nama_barang'] }}</strong> sebanyak 
+                                    <p class="mb-1 text-muted activity-text" style="font-size: 0.85rem;">
+                                        <strong class="text-dark">{{ $act['nama_barang'] }}</strong> — 
                                         <span class="badge bg-{{ $act['type'] == 'incoming' ? 'success' : 'danger' }}-subtle text-{{ $act['type'] == 'incoming' ? 'success' : 'danger' }}">
                                             {{ $act['jumlah'] }} {{ $act['satuan'] }}
-                                        </span> 
-                                        {{ $act['type'] == 'incoming' ? 'diterima dari' : 'digunakan untuk' }} 
-                                        <strong>{{ $act['label'] }}</strong>.
+                                        </span>
                                     </p>
-                                    <small class="text-muted d-block" style="font-size: 0.8rem;">
-                                        No Transaksi: <code>{{ $act['nomor_transaksi'] }}</code> 
+                                    <small class="text-muted d-block" style="font-size: 0.78rem;">
+                                        No: <code>{{ $act['nomor_transaksi'] }}</code>
                                         @if(!empty($act['keterangan']))
-                                            | Keterangan: {{ $act['keterangan'] }}
+                                            | {{ $act['keterangan'] }}
                                         @endif
                                     </small>
                                 </div>

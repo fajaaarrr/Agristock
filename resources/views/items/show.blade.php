@@ -3,10 +3,32 @@
 @section('title', 'Detail Barang - AgriStock')
 @section('header_title', 'Detail Barang')
 
+@section('styles')
+<style>
+    @media (max-width: 768px) {
+        /* Stack columns on mobile */
+        .item-info-col { width: 100% !important; max-width: 100% !important; }
+        .item-history-col { width: 100% !important; max-width: 100% !important; }
+        /* Tab navigation scrollable */
+        #pills-tab {
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+        #pills-tab .nav-link {
+            white-space: nowrap;
+            font-size: 0.85rem;
+        }
+        /* Hide extra table columns */
+        .tbl-hide-sm { display: none; }
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="row">
     <!-- Item Info Panel -->
-    <div class="col-lg-4 mb-4">
+    <div class="col-lg-4 col-12 mb-4 item-info-col">
         <div class="card card-custom p-4 h-100">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <a href="{{ route('items.index') }}" class="btn btn-sm btn-light text-muted">
@@ -71,9 +93,9 @@
     </div>
 
     <!-- Transaction Histories -->
-    <div class="col-lg-8 mb-4">
+    <div class="col-lg-8 col-12 mb-4 item-history-col">
         <div class="card card-custom p-4 h-100">
-            <h5 class="font-weight-bold text-green mb-4"><i class="fa-solid fa-clock-rotate-left me-2"></i> Riwayat Transaksi Barang</h5>
+            <h5 class="font-weight-bold text-green mb-4" style="font-size: 0.95rem;"><i class="fa-solid fa-clock-rotate-left me-2"></i> Riwayat Transaksi Barang</h5>
 
             <!-- Tabs Navigation -->
             <ul class="nav nav-pills mb-4" id="pills-tab" role="tablist">
@@ -98,21 +120,21 @@
                             <thead>
                                 <tr>
                                     <th>No Transaksi</th>
-                                    <th>Tanggal Masuk</th>
+                                    <th class="tbl-hide-sm">Tanggal Masuk</th>
                                     <th>Jumlah</th>
-                                    <th>Supplier</th>
-                                    <th>Keterangan</th>
+                                    <th class="tbl-hide-sm">Supplier</th>
+                                    <th class="tbl-hide-sm">Keterangan</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @if($item->incomingGoods->count() > 0)
                                     @foreach($item->incomingGoods as $inc)
                                         <tr>
-                                            <td><code class="text-dark font-weight-bold">{{ $inc->nomor_transaksi }}</code></td>
-                                            <td>{{ \Carbon\Carbon::parse($inc->tanggal_masuk)->translatedFormat('d M Y') }}</td>
+                                            <td><code class="text-dark font-weight-bold" style="font-size: 0.8rem;">{{ $inc->nomor_transaksi }}</code></td>
+                                            <td class="tbl-hide-sm">{{ \Carbon\Carbon::parse($inc->tanggal_masuk)->translatedFormat('d M Y') }}</td>
                                             <td><span class="badge bg-success-subtle text-success p-2 rounded">{{ $inc->jumlah }}</span></td>
-                                            <td><strong>{{ $inc->supplier }}</strong></td>
-                                            <td class="text-muted" style="font-size: 0.85rem;">{{ $inc->keterangan ?? '-' }}</td>
+                                            <td class="tbl-hide-sm"><strong>{{ $inc->supplier }}</strong></td>
+                                            <td class="tbl-hide-sm text-muted" style="font-size: 0.85rem;">{{ $inc->keterangan ?? '-' }}</td>
                                         </tr>
                                     @endforeach
                                 @else
@@ -132,21 +154,21 @@
                             <thead>
                                 <tr>
                                     <th>No Transaksi</th>
-                                    <th>Tanggal Keluar</th>
+                                    <th class="tbl-hide-sm">Tanggal Keluar</th>
                                     <th>Jumlah</th>
-                                    <th>Tujuan Penggunaan</th>
-                                    <th>Keterangan</th>
+                                    <th class="tbl-hide-sm">Tujuan Penggunaan</th>
+                                    <th class="tbl-hide-sm">Keterangan</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @if($item->outgoingGoods->count() > 0)
                                     @foreach($item->outgoingGoods as $out)
                                         <tr>
-                                            <td><code class="text-dark font-weight-bold">{{ $out->nomor_transaksi }}</code></td>
-                                            <td>{{ \Carbon\Carbon::parse($out->tanggal_keluar)->translatedFormat('d M Y') }}</td>
+                                            <td><code class="text-dark font-weight-bold" style="font-size: 0.8rem;">{{ $out->nomor_transaksi }}</code></td>
+                                            <td class="tbl-hide-sm">{{ \Carbon\Carbon::parse($out->tanggal_keluar)->translatedFormat('d M Y') }}</td>
                                             <td><span class="badge bg-danger-subtle text-danger p-2 rounded">{{ $out->jumlah }}</span></td>
-                                            <td><strong>{{ $out->tujuan_penggunaan }}</strong></td>
-                                            <td class="text-muted" style="font-size: 0.85rem;">{{ $out->keterangan ?? '-' }}</td>
+                                            <td class="tbl-hide-sm"><strong>{{ $out->tujuan_penggunaan }}</strong></td>
+                                            <td class="tbl-hide-sm text-muted" style="font-size: 0.85rem;">{{ $out->keterangan ?? '-' }}</td>
                                         </tr>
                                     @endforeach
                                 @else

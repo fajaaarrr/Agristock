@@ -106,7 +106,7 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="d-flex justify-content-end gap-2">
+                <div class="d-flex flex-column flex-sm-row justify-content-end gap-2">
                     <a href="{{ route('items.index') }}" class="btn btn-light">Batal</a>
                     <button type="submit" class="btn btn-green">
                         <i class="fa-regular fa-floppy-disk me-2"></i> Perbarui Barang

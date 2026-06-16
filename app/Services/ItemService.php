@@ -11,7 +11,7 @@ class ItemService
     /**
      * Get paginated, searched, and category-filtered items.
      */
-    public function getPaginated(string $search = '', ?int $categoryId = null, int $perPage = 10): LengthAwarePaginator
+    public function getPaginated(?string $search = '', ?int $categoryId = null, int $perPage = 10): LengthAwarePaginator
     {
         $query = Item::with('category');
 

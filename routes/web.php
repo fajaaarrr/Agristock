@@ -9,9 +9,9 @@ use App\Http\Controllers\OutgoingGoodsController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
-// Redirect home root to login or dashboard
+// Home root displays the welcome landing page
 Route::get('/', function () {
-    return redirect()->route('dashboard');
+    return view('welcome');
 });
 
 // Authentication routes (Guest)

@@ -3,16 +3,47 @@
 @section('title', 'Laporan Inventaris - AgriStock')
 @section('header_title', 'Laporan Inventaris')
 
+@section('styles')
+<style>
+    @media (max-width: 768px) {
+        /* Make filter form stack vertically */
+        #filterForm .col-md-3 { margin-bottom: 8px; }
+        /* Tabs scroll on mobile */
+        #reportTabs {
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        #reportTabs::-webkit-scrollbar { display: none; }
+        #reportTabs .nav-link {
+            white-space: nowrap;
+            font-size: 0.85rem;
+            padding: 8px 12px;
+        }
+        /* Hide columns on mobile */
+        .tbl-hide-mobile { display: none; }
+        /* Print/cetak button smaller on mobile */
+        .btn-print { font-size: 0.8rem; padding: 4px 10px; }
+        /* Report header flex wrap */
+        .report-header { flex-wrap: wrap; gap: 8px; }
+    }
+    @media (max-width: 576px) {
+        .report-header h5 { font-size: 0.95rem; }
+    }
+</style>
+@endsection
+
 @section('content')
 <!-- Filter Panel Card -->
 <div class="card card-custom p-4 mb-4">
     <h5 class="font-weight-bold text-green mb-3"><i class="fa-solid fa-filter me-2"></i> Filter Periode Laporan</h5>
-    <form action="{{ route('reports.index') }}" method="GET" class="row g-3 align-items-end" id="filterForm">
+    <form action="{{ route('reports.index') }}" method="GET" class="row g-2 align-items-end" id="filterForm">
         <!-- Preserve active tab state -->
         <input type="hidden" name="tab" id="activeTabInput" value="{{ $activeTab }}">
 
         <!-- Filter Type Selector -->
-        <div class="col-md-3">
+        <div class="col-12 col-md-3">
             <label for="filter_type" class="form-label font-weight-bold" style="font-size: 0.85rem;">Periode</label>
             <select name="filter_type" id="filter_type" class="form-select" onchange="toggleCustomDates()">
                 <option value="all" {{ $filterType == 'all' ? 'selected' : '' }}>Semua Riwayat</option>
@@ -24,19 +55,19 @@
         </div>
 
         <!-- Start Date -->
-        <div class="col-md-3 custom-date-field" style="display: none;">
+        <div class="col-12 col-md-3 custom-date-field" style="display: none;">
             <label for="start_date" class="form-label font-weight-bold" style="font-size: 0.85rem;">Tanggal Mulai</label>
             <input type="date" name="start_date" id="start_date" class="form-control" value="{{ $startDate }}">
         </div>
 
         <!-- End Date -->
-        <div class="col-md-3 custom-date-field" style="display: none;">
+        <div class="col-12 col-md-3 custom-date-field" style="display: none;">
             <label for="end_date" class="form-label font-weight-bold" style="font-size: 0.85rem;">Tanggal Selesai</label>
             <input type="date" name="end_date" id="end_date" class="form-control" value="{{ $endDate }}">
         </div>
 
         <!-- Filter Actions -->
-        <div class="col-md-3">
+        <div class="col-12 col-md-3">
             <button type="submit" class="btn btn-green w-100">
                 <i class="fa-solid fa-sync me-2"></i> Terapkan Filter
             </button>
@@ -50,17 +81,17 @@
     <ul class="nav nav-tabs mb-4" id="reportTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link {{ $activeTab == 'stock' ? 'active text-green border-bottom border-success border-2' : 'text-muted' }}" id="stock-tab" data-bs-toggle="tab" data-bs-target="#stock-pane" type="button" role="tab" aria-controls="stock-pane" aria-selected="true" onclick="changeTab('stock')">
-                <i class="fa-solid fa-boxes-stacked me-2"></i> Laporan Stok Barang
+                <i class="fa-solid fa-boxes-stacked me-1"></i> Stok Barang
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link {{ $activeTab == 'incoming' ? 'active text-green border-bottom border-success border-2' : 'text-muted' }}" id="incoming-tab" data-bs-toggle="tab" data-bs-target="#incoming-pane" type="button" role="tab" aria-controls="incoming-pane" aria-selected="false" onclick="changeTab('incoming')">
-                <i class="fa-solid fa-arrow-down-long text-success me-2"></i> Laporan Barang Masuk
+                <i class="fa-solid fa-arrow-down-long text-success me-1"></i> Barang Masuk
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link {{ $activeTab == 'outgoing' ? 'active text-green border-bottom border-success border-2' : 'text-muted' }}" id="outgoing-tab" data-bs-toggle="tab" data-bs-target="#outgoing-pane" type="button" role="tab" aria-controls="outgoing-pane" aria-selected="false" onclick="changeTab('outgoing')">
-                <i class="fa-solid fa-arrow-up-long text-danger me-2"></i> Laporan Barang Keluar
+                <i class="fa-solid fa-arrow-up-long text-danger me-1"></i> Barang Keluar
             </button>
         </li>
     </ul>
@@ -69,9 +100,9 @@
     <div class="tab-content" id="reportTabsContent">
         <!-- 1. Stock levels report pane -->
         <div class="tab-pane fade show {{ $activeTab == 'stock' ? 'active' : '' }}" id="stock-pane" role="tabpanel" aria-labelledby="stock-tab">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-3 report-header">
                 <h5 class="m-0 font-weight-bold text-dark">Laporan Stok Barang Saat Ini</h5>
-                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak Laporan</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak</button>
             </div>
             
             <div class="table-responsive">
@@ -79,13 +110,13 @@
                     <thead class="table-light text-secondary">
                         <tr>
                             <th>No</th>
-                            <th>Kode Barang</th>
+                            <th class="tbl-hide-mobile">Kode Barang</th>
                             <th>Nama Barang</th>
-                            <th>Kategori</th>
-                            <th>Lokasi Rak</th>
-                            <th>Batas Min. Stok</th>
+                            <th class="tbl-hide-mobile">Kategori</th>
+                            <th class="tbl-hide-mobile">Lokasi Rak</th>
+                            <th class="tbl-hide-mobile">Batas Min. Stok</th>
                             <th>Stok Aktual</th>
-                            <th>Status Keamanan</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -93,11 +124,11 @@
                             @foreach($stockReport as $idx => $item)
                                 <tr>
                                     <td>{{ $idx + 1 }}</td>
-                                    <td><code>{{ $item->kode_barang }}</code></td>
+                                    <td class="tbl-hide-mobile"><code>{{ $item->kode_barang }}</code></td>
                                     <td><strong>{{ $item->nama_barang }}</strong></td>
-                                    <td>{{ $item->category->nama_kategori }}</td>
-                                    <td>{{ $item->lokasi_rak ?? '-' }}</td>
-                                    <td>{{ $item->stok_minimum }} {{ $item->satuan }}</td>
+                                    <td class="tbl-hide-mobile">{{ $item->category->nama_kategori }}</td>
+                                    <td class="tbl-hide-mobile">{{ $item->lokasi_rak ?? '-' }}</td>
+                                    <td class="tbl-hide-mobile">{{ $item->stok_minimum }} {{ $item->satuan }}</td>
                                     <td>
                                         <span class="badge {{ $item->is_low_stock ? 'bg-danger' : 'bg-success' }} p-2">
                                             {{ $item->stok }} {{ $item->satuan }}
@@ -124,7 +155,7 @@
 
         <!-- 2. Goods receipt report pane -->
         <div class="tab-pane fade show {{ $activeTab == 'incoming' ? 'active' : '' }}" id="incoming-pane" role="tabpanel" aria-labelledby="incoming-tab">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-3 report-header">
                 <div>
                     <h5 class="m-0 font-weight-bold text-dark">Laporan Transaksi Barang Masuk</h5>
                     <small class="text-muted">Periode: 
@@ -143,7 +174,7 @@
                         </strong>
                     </small>
                 </div>
-                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak Laporan</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak</button>
             </div>
 
             <div class="table-responsive">
@@ -151,12 +182,12 @@
                     <thead class="table-light text-secondary">
                         <tr>
                             <th>No</th>
-                            <th>Tanggal</th>
-                            <th>No Transaksi</th>
+                            <th class="tbl-hide-mobile">Tanggal</th>
+                            <th class="tbl-hide-mobile">No Transaksi</th>
                             <th>Barang</th>
                             <th>Jumlah Masuk</th>
-                            <th>Supplier</th>
-                            <th>Keterangan</th>
+                            <th class="tbl-hide-mobile">Supplier</th>
+                            <th class="tbl-hide-mobile">Keterangan</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -164,15 +195,15 @@
                             @foreach($incomingReport as $idx => $inc)
                                 <tr>
                                     <td>{{ $idx + 1 }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($inc->tanggal_masuk)->translatedFormat('d M Y') }}</td>
-                                    <td><code>{{ $inc->nomor_transaksi }}</code></td>
+                                    <td class="tbl-hide-mobile">{{ \Carbon\Carbon::parse($inc->tanggal_masuk)->translatedFormat('d M Y') }}</td>
+                                    <td class="tbl-hide-mobile"><code>{{ $inc->nomor_transaksi }}</code></td>
                                     <td>
                                         <strong>{{ $inc->item->nama_barang }}</strong>
                                         <small class="text-muted d-block" style="font-size: 0.75rem;">Kode: {{ $inc->item->kode_barang }}</small>
                                     </td>
                                     <td><span class="badge bg-success p-2">+{{ $inc->jumlah }} {{ $inc->item->satuan }}</span></td>
-                                    <td><strong>{{ $inc->supplier }}</strong></td>
-                                    <td class="text-muted" style="font-size: 0.85rem;">{{ $inc->keterangan ?? '-' }}</td>
+                                    <td class="tbl-hide-mobile"><strong>{{ $inc->supplier }}</strong></td>
+                                    <td class="tbl-hide-mobile text-muted" style="font-size: 0.85rem;">{{ $inc->keterangan ?? '-' }}</td>
                                 </tr>
                             @endforeach
                         @else
@@ -187,7 +218,7 @@
 
         <!-- 3. Goods release report pane -->
         <div class="tab-pane fade show {{ $activeTab == 'outgoing' ? 'active' : '' }}" id="outgoing-pane" role="tabpanel" aria-labelledby="outgoing-tab">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-3 report-header">
                 <div>
                     <h5 class="m-0 font-weight-bold text-dark">Laporan Transaksi Barang Keluar</h5>
                     <small class="text-muted">Periode: 
@@ -206,7 +237,7 @@
                         </strong>
                     </small>
                 </div>
-                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak Laporan</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak</button>
             </div>
 
             <div class="table-responsive">
@@ -214,12 +245,12 @@
                     <thead class="table-light text-secondary">
                         <tr>
                             <th>No</th>
-                            <th>Tanggal</th>
-                            <th>No Transaksi</th>
+                            <th class="tbl-hide-mobile">Tanggal</th>
+                            <th class="tbl-hide-mobile">No Transaksi</th>
                             <th>Barang</th>
                             <th>Jumlah Keluar</th>
-                            <th>Tujuan Penggunaan</th>
-                            <th>Keterangan</th>
+                            <th class="tbl-hide-mobile">Tujuan Penggunaan</th>
+                            <th class="tbl-hide-mobile">Keterangan</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -227,15 +258,15 @@
                             @foreach($outgoingReport as $idx => $out)
                                 <tr>
                                     <td>{{ $idx + 1 }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($out->tanggal_keluar)->translatedFormat('d M Y') }}</td>
-                                    <td><code>{{ $out->nomor_transaksi }}</code></td>
+                                    <td class="tbl-hide-mobile">{{ \Carbon\Carbon::parse($out->tanggal_keluar)->translatedFormat('d M Y') }}</td>
+                                    <td class="tbl-hide-mobile"><code>{{ $out->nomor_transaksi }}</code></td>
                                     <td>
                                         <strong>{{ $out->item->nama_barang }}</strong>
                                         <small class="text-muted d-block" style="font-size: 0.75rem;">Kode: {{ $out->item->kode_barang }}</small>
                                     </td>
                                     <td><span class="badge bg-danger p-2">-{{ $out->jumlah }} {{ $out->item->satuan }}</span></td>
-                                    <td><strong>{{ $out->tujuan_penggunaan }}</strong></td>
-                                    <td class="text-muted" style="font-size: 0.85rem;">{{ $out->keterangan ?? '-' }}</td>
+                                    <td class="tbl-hide-mobile"><strong>{{ $out->tujuan_penggunaan }}</strong></td>
+                                    <td class="tbl-hide-mobile text-muted" style="font-size: 0.85rem;">{{ $out->keterangan ?? '-' }}</td>
                                 </tr>
                             @endforeach
                         @else

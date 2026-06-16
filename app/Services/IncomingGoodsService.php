@@ -12,7 +12,7 @@ class IncomingGoodsService
     /**
      * Get paginated incoming goods list with search.
      */
-    public function getPaginated(string $search = '', int $perPage = 10): LengthAwarePaginator
+    public function getPaginated(?string $search = '', int $perPage = 10): LengthAwarePaginator
     {
         $query = IncomingGoods::with('item');
 

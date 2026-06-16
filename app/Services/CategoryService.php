@@ -10,7 +10,7 @@ class CategoryService
     /**
      * Get paginated and filtered list of categories.
      */
-    public function getPaginated(string $search = '', int $perPage = 10): LengthAwarePaginator
+    public function getPaginated(?string $search = '', int $perPage = 10): LengthAwarePaginator
     {
         $query = Category::query();
 

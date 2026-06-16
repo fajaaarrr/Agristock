@@ -13,7 +13,7 @@ class OutgoingGoodsService
     /**
      * Get paginated outgoing goods list with search.
      */
-    public function getPaginated(string $search = '', int $perPage = 10): LengthAwarePaginator
+    public function getPaginated(?string $search = '', int $perPage = 10): LengthAwarePaginator
     {
         $query = OutgoingGoods::with('item');
 

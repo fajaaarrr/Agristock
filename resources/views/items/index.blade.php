@@ -3,20 +3,45 @@
 @section('title', 'Daftar Barang - AgriStock')
 @section('header_title', 'Stok Barang')
 
+@section('styles')
+<style>
+    @media (max-width: 576px) {
+        /* Action buttons: icon-only on mobile */
+        .btn-action-text { display: none; }
+        .table-custom th:nth-child(4),
+        .table-custom td:nth-child(4),
+        .table-custom th:nth-child(6),
+        .table-custom td:nth-child(6) {
+            display: none;
+        }
+        /* Item header wrap */
+        .items-header {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 8px;
+        }
+        .items-header .btn-green {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="card card-custom p-4">
     <!-- Search and Filters Form -->
-    <form action="{{ route('items.index') }}" method="GET" class="row g-3 mb-4 align-items-center">
+    <form action="{{ route('items.index') }}" method="GET" class="row g-2 mb-4 align-items-center">
         <!-- Search bar -->
-        <div class="col-md-5">
+        <div class="col-12 col-md-5">
             <div class="input-group">
                 <span class="input-group-text bg-white text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
-                <input type="text" name="search" class="form-control" placeholder="Cari Kode, Nama Barang, atau Rak..." value="{{ $search }}">
+                <input type="text" name="search" class="form-control" placeholder="Cari Kode, Nama, atau Rak..." value="{{ $search }}">
             </div>
         </div>
 
         <!-- Category Filter -->
-        <div class="col-md-4">
+        <div class="col-12 col-md-4">
             <select name="category_id" class="form-select" onchange="this.form.submit()">
                 <option value="">-- Semua Kategori --</option>
                 @foreach($categories as $category)
@@ -28,10 +53,10 @@
         </div>
 
         <!-- Search button & Reset -->
-        <div class="col-md-3 d-flex gap-2">
+        <div class="col-12 col-md-3 d-flex gap-2">
             <button class="btn btn-green w-100" type="submit">Filter</button>
             @if(!empty($search) || !empty($categoryId))
-                <a href="{{ route('items.index') }}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center p-2" title="Reset Filter">
+                <a href="{{ route('items.index') }}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center px-3" title="Reset Filter">
                     <i class="fa-solid fa-rotate-left"></i>
                 </a>
             @endif
@@ -39,8 +64,8 @@
     </form>
 
     <!-- Header Actions -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h6 class="text-muted m-0">Menampilkan {{ $items->firstItem() ?? 0 }} - {{ $items->lastItem() ?? 0 }} dari {{ $items->total() }} barang</h6>
+    <div class="d-flex justify-content-between align-items-center mb-3 items-header">
+        <h6 class="text-muted m-0" style="font-size: 0.85rem;">Menampilkan {{ $items->firstItem() ?? 0 }} - {{ $items->lastItem() ?? 0 }} dari {{ $items->total() }} barang</h6>
         <a href="{{ route('items.create') }}" class="btn btn-green">
             <i class="fa-solid fa-plus-circle me-2"></i> Tambah Barang
         </a>
@@ -89,17 +114,17 @@
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-2">
                                     <a href="{{ route('items.show', $item->id) }}" class="btn btn-sm btn-outline-info" title="Detail Barang">
-                                        <i class="fa-regular fa-eye"></i> Detail
+                                        <i class="fa-regular fa-eye"></i> <span class="btn-action-text">Detail</span>
                                     </a>
                                     <a href="{{ route('items.edit', $item->id) }}" class="btn btn-sm btn-outline-primary" title="Edit Barang">
-                                        <i class="fa-regular fa-pen-to-square"></i> Edit
+                                        <i class="fa-regular fa-pen-to-square"></i> <span class="btn-action-text">Edit</span>
                                     </a>
                                     
                                     <form action="{{ route('items.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus barang ini? Penghapusan akan gagal jika terdapat riwayat transaksi.');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus Barang">
-                                            <i class="fa-regular fa-trash-can"></i> Hapus
+                                            <i class="fa-regular fa-trash-can"></i> <span class="btn-action-text">Hapus</span>
                                         </button>
                                     </form>
                                 </div>

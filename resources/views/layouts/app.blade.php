@@ -30,6 +30,11 @@
             --sidebar-width: 260px;
         }
 
+        /* Mobile Viewport Fix */
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Outfit', 'Inter', sans-serif;
             background-color: var(--bg-light);
@@ -110,6 +115,21 @@
             padding: 30px 24px;
         }
 
+        /* Sidebar Overlay Backdrop */
+        #sidebarOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+        #sidebarOverlay.active {
+            display: block;
+        }
+
         /* Cards & Components */
         .card-custom {
             border: none;
@@ -178,19 +198,53 @@
             vertical-align: middle;
         }
 
+        /* Hide hamburger button on desktop */
+        @media (min-width: 769px) {
+            #sidebarCollapse {
+                display: none !important;
+            }
+        }
+
         /* Sidebar toggle on mobile */
         @media (max-width: 768px) {
             #sidebar {
                 margin-left: calc(-1 * var(--sidebar-width));
+                z-index: 1050;
             }
             #sidebar.active {
                 margin-left: 0;
             }
             #content {
-                margin-left: 0;
+                margin-left: 0 !important;
             }
-            #content.active {
-                margin-left: var(--sidebar-width);
+            .navbar-custom {
+                padding: 12px 16px;
+            }
+            .main-container {
+                padding: 16px 12px;
+            }
+            /* Notification dropdown full width on mobile */
+            .dropdown-menu[aria-labelledby="notificationDropdown"] {
+                width: calc(100vw - 24px) !important;
+                max-width: 320px;
+                right: -60px !important;
+            }
+            /* Page title always visible on mobile */
+            .navbar-page-title {
+                display: block !important;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-container {
+                padding: 12px 10px;
+            }
+            .card-custom {
+                padding: 16px !important;
+            }
+            .card-custom.p-4 {
+                padding: 16px !important;
             }
         }
     </style>
@@ -198,10 +252,9 @@
 </head>
 <body>
 
-    <!-- Sidebar -->
     <nav id="sidebar">
         <div class="sidebar-header d-flex align-items-center">
-            <i class="fa-solid fa-leaf text-warning me-2 fs-4"></i>
+            <i class="fa-solid fa-wheat-awn text-warning me-2 fs-4"></i>
             <h3>AgriStock</h3>
         </div>
         <div class="mt-4">
@@ -226,15 +279,18 @@
         </div>
     </nav>
 
+    <!-- Sidebar Overlay Backdrop (Mobile) -->
+    <div id="sidebarOverlay"></div>
+
     <!-- Main Content wrapper -->
     <div id="content">
         <!-- Top Navbar -->
         <nav class="navbar navbar-expand-lg navbar-custom navbar-light d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <button type="button" id="sidebarCollapse" class="btn btn-outline-secondary border-0 me-3 d-md-none">
+                <button type="button" id="sidebarCollapse" class="btn btn-outline-secondary border-0 me-2 me-md-3" style="border-radius: 8px;">
                     <i class="fa-solid fa-bars"></i>
                 </button>
-                <h5 class="m-0 font-weight-bold d-none d-sm-block">
+                <h5 class="m-0 font-weight-bold navbar-page-title" style="font-size: 1rem;">
                     @yield('header_title', 'Sistem Inventaris Gudang')
                 </h5>
             </div>
@@ -338,9 +394,39 @@
     
     <!-- Sidebar mobile toggler script -->
     <script>
-        document.getElementById('sidebarCollapse').addEventListener('click', function () {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('content').classList.toggle('active');
+        const sidebarCollapseBtn = document.getElementById('sidebarCollapse');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        function openSidebar() {
+            sidebar.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        sidebarCollapseBtn.addEventListener('click', function () {
+            if (sidebar.classList.contains('active')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+
+        overlay.addEventListener('click', closeSidebar);
+
+        // Close sidebar on nav link click (mobile)
+        document.querySelectorAll('#sidebar .nav-link').forEach(function(link) {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    closeSidebar();
+                }
+            });
         });
     </script>
     @yield('scripts')
